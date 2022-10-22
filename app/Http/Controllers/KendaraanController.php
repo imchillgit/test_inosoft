@@ -1,7 +1,11 @@
 <?php
 
+
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
+use App\Services\KendaraanService;
 use App\Models\Kendaraan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -9,15 +13,22 @@ use Illuminate\Support\Facades\Validator;
 
 class KendaraanController extends Controller
 {
+    private $kendaraanService;
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct(KendaraanService $kendaraanService)
+    {
+        $this->kendaraanService = $kendaraanService;
+    }
     public function index()
     {
         //
-        return Kendaraan::all();
+        $kendaraan = $this->kendaraanService->getAll();
+        return $kendaraan;
     }
 
     /**
@@ -28,6 +39,7 @@ class KendaraanController extends Controller
      */
     public function store(Request $request)
     {
+        /*
         $validator = Validator::make($request->all(), [
             '_id'     => 'required',
             'tahun'   => 'required',
@@ -44,10 +56,18 @@ class KendaraanController extends Controller
             'tahun'   => $request->tahun,
             'warna'   => $request->warna,
             'harga'   => $request->harga,
-        ]);
+        ]);*/
+        /*$data = $request->only([
+            '_id',
+            'tahun',
+            'warna',
+            'harga'
+        ]);*/
+        $data = $request->all();
+        $kendaraan = $this->kendaraanService->savePostData($data);
 
+        return $kendaraan;
         //
-        return response()->json($post);
     }
 
     /**
@@ -79,10 +99,10 @@ class KendaraanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Kendaraan $kendaraan)
+    public function destroy($id)
     {
-        $kendaraan->delete();
-        return response()->json($kendaraan);
+        $this->kendaraanService->deletebyId($id);
+        return response()->json($id);
         //
     }
 }

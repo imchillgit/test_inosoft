@@ -18,8 +18,8 @@ use App\Http\Controllers\TransactionController;
 
 Route::get('/kendaraan', [KendaraanController::class, 'index']);
 Route::post('/kendaraan', [KendaraanController::class, 'store']);
-Route::put('/kendaraan/{_id}', [KendaraanController::class, 'update']);
 Route::delete('/kendaraan/{_id}', [KendaraanController::class, 'destroy']);
+Route::put('/kendaraan/{_id}', [KendaraanController::class, 'update']);
 
 Route::get('/transaction', [TransactionController::class, 'index']);
 Route::get('/transaction/{idkendaraan}', [TransactionController::class, 'show']);

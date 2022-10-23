@@ -1,6 +1,6 @@
 ## Laravel CRUD MongoDB
 
-## Env Configuration
+## .env Configuration
 ```
 DB_CONNECTION=mongodb
 DB_HOST=127.0.0.1

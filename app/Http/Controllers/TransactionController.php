@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -12,10 +12,17 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct(TransactionService $transactionService)
+    {
+        $this->middleware('auth:api');
+        $this->transactionService = $transactionService;
+    }
     public function index()
     {
         //
-        return Order::all();
+        $transaction = $this->transactionService->getAll();
+        return $transaction;
     }
 
     /**
@@ -26,29 +33,25 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        $post = Order::create([
-            'idkendaraan'   => $request->idkendaraan,
-            'jumlah_penjualan'   => $request->jumlah_penjualan,
-            'harga'   => $request->harga,
-            'harga_total' => $request->harga * $request->jumlah_penjualan
-            
-        ]);
-        
-        return response()->json($post);
+
+        $data = $request->all();
+        $transaction = $this->transactionService->savePostData($data);
+
+        return $transaction;
         //
     }
-    
+
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($order)
+    public function show($id)
     {
         //
-        $find = Order::where('idkendaraan', $order)->sum('harga_total');
-        return response()->json($find);
+        $transaction = $this->transactionService->getTotalPriceById($id);
+        return $transaction;
     }
 
     /**

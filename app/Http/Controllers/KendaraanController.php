@@ -8,7 +8,6 @@ namespace App\Http\Controllers;
 use App\Services\KendaraanService;
 use App\Models\Kendaraan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 
 class KendaraanController extends Controller
@@ -22,6 +21,7 @@ class KendaraanController extends Controller
 
     public function __construct(KendaraanService $kendaraanService)
     {
+        $this->middleware('auth:api');
         $this->kendaraanService = $kendaraanService;
     }
     public function index()
@@ -39,35 +39,10 @@ class KendaraanController extends Controller
      */
     public function store(Request $request)
     {
-        /*
-        $validator = Validator::make($request->all(), [
-            '_id'     => 'required',
-            'tahun'   => 'required',
-            'warna'   => 'required',
-            'harga'   => 'required',
-        ]);
-
-        //check if validation fails
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-        $post = Kendaraan::create([
-            '_id'     => $request->_id,
-            'tahun'   => $request->tahun,
-            'warna'   => $request->warna,
-            'harga'   => $request->harga,
-        ]);*/
-        /*$data = $request->only([
-            '_id',
-            'tahun',
-            'warna',
-            'harga'
-        ]);*/
         $data = $request->all();
         $kendaraan = $this->kendaraanService->savePostData($data);
 
         return $kendaraan;
-        //
     }
 
     /**

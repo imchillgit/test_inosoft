@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Repository\Eloquent\KendaraanRepository; 
@@ -15,29 +17,30 @@ class KendaraanService
     }
     public function getAll()
     {
-        return $this->kendaraanRepository->all();
+        $result = $this->kendaraanRepository->all();
+        return response()->json(['status' => '200', 'message' => 'success', 'data' => $result], 200);
     }
     public function savePostData($data)
     {
         $validator = Validator::make($data, [
             '_id'     => 'required',
-            'tahun'   => 'required',
-            'warna'   => 'required',
-            'harga'   => 'required',
-            'stok'    => 'required',
+            'tahun'   => 'required|int|min:1970|max:3000',
+            'warna'   => 'required|string|max:30',
+            'harga'   => 'required|int',
+            'stok'    => 'required|int',
         ]);
         //check if validation fails
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json(['status' => '422', 'message' => 'Unprocessable content', 'data' => $validator->errors()], 422);
         }
         $result = $this->kendaraanRepository->store($data);
 
-        return $result;
+        return response()->json(['status' => '201', 'message' => 'success', 'data' => $result], 201);
     }
     public function deletebyId($id)
     {
         $result = $this->kendaraanRepository->delete($id);
-
-        return $result;
+        
+        return response()->json(['status' => '200', 'message' => 'success', 'data' => $result], 200);
     }
 }
